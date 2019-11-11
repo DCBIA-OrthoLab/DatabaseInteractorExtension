@@ -4,7 +4,7 @@ import json
 import logging
 import os, shutil, zipfile
 import subprocess
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 #
 # DatabaseInteractor
@@ -487,7 +487,7 @@ class DatabaseInteractorWidget(slicer.ScriptedLoadableModule.ScriptedLoadableMod
             Function used to reset the CLI widget when exiting the module 
         """
         print("-----------EXIT------------")
-        for moduleName, slot in self.modulesLoaded.iteritems():
+        for moduleName, slot in self.modulesLoaded.items():
             node = getattr(slicer.modules, moduleName)
             applyButton = node.widgetRepresentation().ApplyPushButton
             applyButton.disconnect(applyButton, 'clicked(bool)')
@@ -840,7 +840,7 @@ class DatabaseInteractorWidget(slicer.ScriptedLoadableModule.ScriptedLoadableMod
         if os.path.exists(os.path.join(directoryPath, '.DBIDescriptor')):
             file = open(os.path.join(directoryPath, '.DBIDescriptor'), 'r')
             collectionDescriptor = json.load(file)
-            patientList = collectionDescriptor["items"].keys()
+            patientList = list(collectionDescriptor["items"].keys())
             self.managementPatientSelector.addItems(patientList)
         else:
             self.managementPatientSelector.addItem("None")
@@ -852,7 +852,7 @@ class DatabaseInteractorWidget(slicer.ScriptedLoadableModule.ScriptedLoadableMod
             Function used to fill the comboBox with a list of executable in the current Slicer
         """
         self.modules = {}
-        modules = slicer.modules.__dict__.keys()
+        modules = list(slicer.modules.__dict__.keys())
         for moduleName in modules:
             module = getattr(slicer.modules, moduleName)
             if hasattr(module, "cliModuleLogic"):
@@ -1249,7 +1249,7 @@ class DatabaseInteractorWidget(slicer.ScriptedLoadableModule.ScriptedLoadableMod
                 # Add all the new files in a zip file
                 if not directory:
                     folderName = "computationFiles"
-                print filesDifference
+                print(filesDifference)
                 if len(filesDifference) > 0:
                     with zipfile.ZipFile(os.path.join(jobpath, folderName + '.zip'), 'w') as myzip:
                         for file in filesDifference:
@@ -1516,7 +1516,7 @@ class DatabaseInteractorTest(slicer.ScriptedLoadableModule.ScriptedLoadableModul
         """ ---------------------------------------------------------------- 
             ------------------- Download some data online ------------------ 
             ---------------------------------------------------------------- """
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         downloads = (
             ('http://slicer.kitware.com/midas3/download?items=5767', 'FA.nrrd'),
         )
@@ -1525,12 +1525,12 @@ class DatabaseInteractorTest(slicer.ScriptedLoadableModule.ScriptedLoadableModul
             filePath = os.path.join(slicer.app.temporaryPath, name)
             if not os.path.exists(filePath) or os.stat(filePath).st_size == 0:
                 logging.info('Requesting download %s from %s...\n' % (name, url))
-                urllib.urlretrieve(url, filePath)
+                urllib.request.urlretrieve(url, filePath)
         return True
 
     def runTestClusterpost(self):
         import ClusterpostLib
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
 
         self.testfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../DatabaseInteractor.png")
 
@@ -1572,7 +1572,7 @@ class DatabaseInteractorTest(slicer.ScriptedLoadableModule.ScriptedLoadableModul
         
     def testGetExecutionServers(self):
         servers = self.clusterpost.getExecutionServers()
-        print servers
+        print(servers)
         self.executionserver = servers[0]["name"]
         return True
 

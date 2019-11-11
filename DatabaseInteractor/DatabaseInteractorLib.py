@@ -7,7 +7,7 @@ from slicer.ScriptedLoadableModule import *
 import json
 
 
-class DatabaseInteractorLib():
+class DatabaseInteractorLib(object):
     def __init__(self, parent=None):
         if parent:
             parent.title = " "
