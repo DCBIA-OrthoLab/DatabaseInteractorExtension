@@ -6,7 +6,7 @@ from slicer.ScriptedLoadableModule import *
 
 import json
 
-class ClusterpostLib():
+class ClusterpostLib(object):
     def __init__(self, parent=None):
         if parent:
             parent.title = " "
